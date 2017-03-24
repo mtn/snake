@@ -23,6 +23,7 @@ void moveLeft(Snake* S);
 void moveRight(Snake* S);
 Snake* newSnake(int xMax, int yMax);
 void delSnake(Snake* S);
+void renderSnake(Window* W, Snake* S);
 
 #endif /* SNAKE_H */
 

@@ -10,8 +10,7 @@ typedef WINDOW Window;
 typedef struct {
     int x;
     int y;
-    bool isOccupied;
-} Coord;
+} Coord, *CoordPtr;
 
 #endif /* MAIN_H */
 

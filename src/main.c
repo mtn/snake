@@ -73,10 +73,12 @@ int main(){
     Window *gamewin = newwin(boundY,boundX,borderTB,borderLR);
     refresh();
     box(gamewin,0,0);
-    wrefresh(gamewin);
 
     Snake* S = newSnake(boundX-1,boundY-1);
+    renderSnake(gamewin,S);
 
+    /* do{ */
+    /* } while(true); */
 
     getch();
     endwin();
