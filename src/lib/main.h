@@ -12,5 +12,7 @@ typedef struct {
     int y;
 } Coord, *CoordPtr;
 
+bool wmvaddch(Window* W, int y, int x, int ch);
+
 #endif /* MAIN_H */
 

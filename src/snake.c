@@ -7,8 +7,7 @@
 void renderSnake(Window* W, Snake* S){
     // Pretty naive, for now
     for(int i = 0; i < S->len; i++){
-        mvwprintw(W,S->loc[i]->y,S->loc[i]->x,"\u25CF");
-        wprintw(W,"hi");
+        wmvaddch(W,S->loc[i]->y,S->loc[i]->x,ACS_DIAMOND);
     }
     wrefresh(W);
 }
@@ -31,6 +30,8 @@ void moveUp(Snake* S){
 }
 
 void moveDown(Snake* S){
+    printw("%d %d",S->loc[0]->y,S->b->yMax);
+    refresh();
     if(S->loc[S->len-1]->y < S->b->yMax){
         Coord *prev = S->loc[S->len-1];
         S->loc[S->len-1]->y++;
@@ -47,6 +48,8 @@ void moveLeft(Snake* S){
 }
 
 void moveRight(Snake* S){
+    printw("%d %d",S->loc[0]->x,S->b->xMax);
+    refresh();
     if(S->loc[S->len-1]->x < S->b->xMax){
         Coord *prev = S->loc[S->len-1];
         S->loc[S->len-1]->x++;
@@ -67,7 +70,7 @@ Snake* newSnake(int xMax, int yMax){
         printf("Allocation of boundaries failed!");
         exit(1);
     }
-    b->xMax = b->xMax, b->yMax = yMax;
+    b->xMax = xMax, b->yMax = yMax;
     S->b = b;
 
     Coord** coordArr = malloc(sizeof(CoordPtr)*xMax*yMax);

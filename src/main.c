@@ -4,6 +4,15 @@
 #include "lib/snake.h"
 #include "lib/main.h"
 
+bool wmvaddch(Window* W, int y, int x, int ch){
+    int xMax, yMax;
+    getmaxyx(W,yMax,xMax);
+    if(yMax < y || xMax < x) return false;
+
+    wmove(W,y,x);
+    waddch(W,ch);
+    return true;
+}
 
 int main(){
 
@@ -71,14 +80,39 @@ int main(){
     int borderLR = (xMax-boundX)/2;
 
     Window *gamewin = newwin(boundY,boundX,borderTB,borderLR);
+    keypad(gamewin,TRUE);
     refresh();
     box(gamewin,0,0);
 
     Snake* S = newSnake(boundX-1,boundY-1);
     renderSnake(gamewin,S);
 
-    /* do{ */
-    /* } while(true); */
+    halfdelay(5);
+    do{
+        choice = wgetch(gamewin);
+        switch(choice){
+            case KEY_UP:
+                printw("u pressed");
+                moveUp(S);
+                break;
+            case KEY_DOWN:
+                printw("d pressed");
+                moveDown(S);
+                break;
+            case KEY_LEFT:
+                printw("l pressed");
+                moveLeft(S);
+                break;
+            case KEY_RIGHT:
+                printw("r pressed");
+                moveRight(S);
+                break;
+            case ERR:
+                break;
+        }
+        refresh();
+        renderSnake(gamewin,S);;
+    } while(true);
 
     getch();
     endwin();
