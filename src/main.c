@@ -92,20 +92,20 @@ int main(){
         choice = wgetch(gamewin);
         switch(choice){
             case KEY_UP:
-                printw("u pressed");
-                moveUp(S);
+                printw("u ");
+                moveUp(gamewin,S);
                 break;
             case KEY_DOWN:
-                printw("d pressed");
-                moveDown(S);
+                printw("d ");
+                moveDown(gamewin,S);
                 break;
             case KEY_LEFT:
-                printw("l pressed");
-                moveLeft(S);
+                printw("l ");
+                moveLeft(gamewin,S);
                 break;
             case KEY_RIGHT:
-                printw("r pressed");
-                moveRight(S);
+                printw("r ");
+                moveRight(gamewin,S);
                 break;
             case ERR:
                 break;

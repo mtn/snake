@@ -12,48 +12,39 @@ void renderSnake(Window* W, Snake* S){
     wrefresh(W);
 }
 
-void percolate(Snake* S, Coord* prev){
-    Coord* temp;
-    for(int i = S->len-2; i >= 0; i--){
-        temp = S->loc[i];
-        S->loc[i] = prev;
-        prev = temp;
-    }
-}
-
-void moveUp(Snake* S){
+void moveUp(Window* W, Snake* S){
     if(S->loc[S->len-1]->y > 1){
-        Coord *prev = S->loc[S->len-1];
-        S->loc[S->len-1]->y--;
-        percolate(S,prev);
+        mvwprintw(W,S->loc[S->lastInd]->y,S->loc[S->lastInd]->x," ");
+        S->loc[S->lastInd]->y = S->loc[S->lastInd]->y - 1;
+        S->loc[S->lastInd]->x = S->loc[S->lastInd]->x;
+        S->lastInd = (S->lastInd + 1) % S->len;
     }
 }
 
-void moveDown(Snake* S){
-    printw("%d %d",S->loc[0]->y,S->b->yMax);
-    refresh();
+void moveDown(Window* W, Snake* S){
     if(S->loc[S->len-1]->y < S->b->yMax){
-        Coord *prev = S->loc[S->len-1];
-        S->loc[S->len-1]->y++;
-        percolate(S,prev);
+        mvwprintw(W,S->loc[S->lastInd]->y,S->loc[S->lastInd]->x," ");
+        S->loc[S->lastInd]->y = S->loc[S->lastInd]->y + 1;
+        S->loc[S->lastInd]->x = S->loc[S->lastInd]->x;
+        S->lastInd = (S->lastInd + 1) % S->len;
     }
 }
 
-void moveLeft(Snake* S){
+void moveLeft(Window* W, Snake* S){
     if(S->loc[S->len-1]->x > 1){
-        Coord *prev = S->loc[S->len-1];
-        S->loc[S->len-1]->x--;
-        percolate(S,prev);
+        mvwprintw(W,S->loc[S->lastInd]->y,S->loc[S->lastInd]->x," ");
+        S->loc[S->lastInd]->y = S->loc[S->lastInd]->y;
+        S->loc[S->lastInd]->x = S->loc[S->lastInd]->x - 1;
+        S->lastInd = (S->lastInd + 1) % S->len;
     }
 }
 
-void moveRight(Snake* S){
-    printw("%d %d",S->loc[0]->x,S->b->xMax);
-    refresh();
+void moveRight(Window* W, Snake* S){
     if(S->loc[S->len-1]->x < S->b->xMax){
-        Coord *prev = S->loc[S->len-1];
-        S->loc[S->len-1]->x++;
-        percolate(S,prev);
+        mvwprintw(W,S->loc[S->lastInd]->y,S->loc[S->lastInd]->x," ");
+        S->loc[S->lastInd]->y = S->loc[S->lastInd]->y;
+        S->loc[S->lastInd]->x = S->loc[S->lastInd]->x + 1;
+        S->lastInd = (S->lastInd + 1) % S->len;
     }
 }
 
@@ -85,13 +76,15 @@ Snake* newSnake(int xMax, int yMax){
     first->x = (xMax+1)/2;
     first->y = (yMax+1)/2;
     S->loc[0] = first;
+    S->lastInd = 0;
     S->len = 1;
 
     return(S);
 }
 
 void delSnake(Snake* S){
-    // TODO free loc arr
+    for(int i = 0; i < S->len; i++)
+        free(S->loc[i]);
     free(S->b);
     free(S);
 }

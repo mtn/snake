@@ -14,13 +14,15 @@ typedef struct {
 typedef struct {
     Coord** loc;
     Boundaries* b; // These aren't really snake properties, but convenient and unchanging
+    int lastDir;
+    int lastInd; // Index of last, because the coord array won't be kept in order for efficiency
     int len; // Also corresponds to score
 } Snake;
 
-void moveUp(Snake* S);
-void moveDown(Snake* S);
-void moveLeft(Snake* S);
-void moveRight(Snake* S);
+void moveUp(Window* W, Snake* S);
+void moveDown(Window* W, Snake* S);
+void moveLeft(Window* W, Snake* S);
+void moveRight(Window* W, Snake* S);
 Snake* newSnake(int xMax, int yMax);
 void delSnake(Snake* S);
 void renderSnake(Window* W, Snake* S);
