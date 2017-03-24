@@ -1,6 +1,8 @@
 #include <ncurses.h>
 #include <string.h>
 
+#include "lib/snake.h"
+
 typedef WINDOW Window;
 
 int main(){
@@ -35,7 +37,6 @@ int main(){
     mvwprintw(menuwin,3,2,"Select difficulty:");
 
     while(true){
-        printw("highlight: %d",highlight);
         for(int i = 0; i < 3; ++i){
             if(i==highlight){
                 wattron(menuwin,A_BOLD);
@@ -50,30 +51,28 @@ int main(){
 
         switch(choice){
             case KEY_DOWN:
-                printw("keydown pressed");
-                refresh();
                 if(highlight < 2) highlight++;
                 break;
             case KEY_UP:
-                printw("keyup pressed");
-                refresh();
                 if(highlight > 0) highlight--;
             default:
                 break;
         }
         refresh();
         // wgetch 10  -> enter -> no more rendering
-        if(choice==10) break;
         wrefresh(menuwin);
+        if(choice==10) break;
     }
-    printw("selected difficulty: %s",difficulties[highlight]);
+    delwin(menuwin);
+
+    borderTB = (yMax-yMax/relSize)/2;
+    borderLR = (xMax-xMax/relSize)/2;
+    Window *gamewin = newwin((int)(yMax/relSize),(int)(xMax/relSize),borderTB,borderLR);
     refresh();
-    getch();
+    box(gamewin,0,0);
+    wrefresh(gamewin);
 
-    keypad(menuwin,TRUE);
-
-    borderTB = (yMax/relSize)/2;
-    borderLR = (xMax/relSize)/2;
+    /* mvprintw(yMax-1,xMax-strlen(scoreDisp)+4,strcat()); */
 
     getch();
     endwin();
