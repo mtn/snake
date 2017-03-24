@@ -2,8 +2,8 @@
 #include <string.h>
 
 #include "lib/snake.h"
+#include "lib/main.h"
 
-typedef WINDOW Window;
 
 int main(){
 
@@ -12,7 +12,7 @@ int main(){
     curs_set(0);
     cbreak();
 
-    int yMax, xMax, borderTB, borderLR, menuHeight=10, menuWidth=40;
+    int yMax, xMax, menuHeight=10, menuWidth=40;
     float relSize = 1.5; // ~1/3 of terminal should be border
     getmaxyx(stdscr,yMax,xMax);
     if(yMax <= menuHeight || xMax <= menuWidth){
@@ -65,15 +65,20 @@ int main(){
     }
     delwin(menuwin);
 
-    borderTB = (yMax-yMax/relSize)/2;
-    borderLR = (xMax-xMax/relSize)/2;
-    Window *gamewin = newwin((int)(yMax/relSize),(int)(xMax/relSize),borderTB,borderLR);
+    int boundY = yMax/relSize;
+    int boundX = xMax/relSize;
+    int borderTB = (yMax-boundY)/2;
+    int borderLR = (xMax-boundX)/2;
+
+    Window *gamewin = newwin(boundY,boundX,borderTB,borderLR);
     refresh();
     box(gamewin,0,0);
     wrefresh(gamewin);
 
-    /* mvprintw(yMax-1,xMax-strlen(scoreDisp)+4,strcat()); */
+    Snake* S = newSnake(boundX-1,boundY-1);
+
 
     getch();
     endwin();
 }
+

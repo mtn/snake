@@ -1,23 +1,30 @@
 // Interface for snake movement
 
+#ifndef SNAKE_H
+#define SNAKE_H
+
+#include "main.h"
+
+
 typedef struct {
-    int xMin;
-    int xMax;
-    int yMin;
+    int xMax; // These are max legal positions
     int yMax;
 } Boundaries;
 
 typedef struct {
-    int xLoc;
-    int yLoc;
-    Boundaries *b; // These aren't really snake properties, but very helpful
-    int len; // Corresponds to score
+    Coord* loc;
+    Boundaries* b; // These aren't really snake properties, but convenient and unchanging
+    int xLast; // Position of end of tail
+    int yLast;
+    int len; // Also corresponds to score
 } Snake;
 
 void moveUp(Snake* S);
 void moveDown(Snake* S);
 void moveLeft(Snake* S);
 void moveRight(Snake* S);
-Snake* newSnake(int xMin, int xMax, int yMin, int yMax);
+Snake* newSnake(int xMax, int yMax);
 void delSnake(Snake* S);
+
+#endif /* SNAKE_H */
 

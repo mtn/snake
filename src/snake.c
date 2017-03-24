@@ -3,41 +3,62 @@
 
 #include "lib/snake.h"
 
+
 void moveUp(Snake* S){
-    if(S->yLoc > S->b->yMin) (S->yLoc)--;
+    if(S->loc->y > 1){
+        (S->loc->y)--;
+    }
 }
 
 void moveDown(Snake* S){
-    if(S->yLoc < S->b->yMax) (S->yLoc)++;
+    if(S->loc->y < S->b->yMax){
+        (S->loc->y)++;
+    }
 }
 
 void moveLeft(Snake* S){
-    if(S->xLoc > S->b->xMin) (S->xLoc)--;
+    if(S->loc->x > 1){
+        (S->loc->x)--;
+    }
 }
 
 void moveRight(Snake* S){
-    if(S->xLoc < S->b->xMax) (S->xLoc)++;
+    if(S->loc->x < S->b->xMax){
+        (S->loc->x)++;
+    }
 }
 
-Snake* newSnake(int xMin, int xMax, int yMin, int yMax){
+Snake* newSnake(int xMax, int yMax){
+
     Snake *S = malloc(sizeof(Snake));
     if(!S){
-        printf("Allocation failed");
+        printf("Allocation of snake failed");
         exit(1);
     }
+
     Boundaries *b = malloc(sizeof(Boundaries));
-    b->xMin = xMin, b->xMax = b->xMax, b->yMin = yMin, b->yMax = yMax;
+    if(!b){
+        printf("Allocation of boundaries failed");
+        exit(1);
+    }
+    b->xMax = b->xMax, b->yMax = yMax;
     S->b = b;
 
+    Coord* coordArr = malloc(sizeof(Coord));
+
+
     // Snake will start in the center, with length 1
-    S->xLoc = (xMin+xMax)/2;
-    S->yLoc = (yMin+xMax)/2;
+    S->loc->x = (xMax+1)/2;
+    S->loc->y = (yMax+1)/2;
+    S->xLast = S->xLoc;
+    S->yLast = S->yLoc;
     S->len = 1;
 
     return(S);
 }
 
 void delSnake(Snake* S){
+    // TODO free loc arr
     free(S->b);
     free(S);
 }
