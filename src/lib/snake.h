@@ -12,10 +12,8 @@ typedef struct {
 } Boundaries;
 
 typedef struct {
-    Coord* loc;
+    Coord** loc;
     Boundaries* b; // These aren't really snake properties, but convenient and unchanging
-    int xLast; // Position of end of tail
-    int yLast;
     int len; // Also corresponds to score
 } Snake;
 
