@@ -96,7 +96,6 @@ int main(){
             gamewin->isOccupied[i] = true;
         else gamewin->isOccupied[i] = false;
     }
-
     keypad(gamewin->W,TRUE);
     refresh();
     box(gamewin->W,0,0);
@@ -118,27 +117,30 @@ int main(){
     }
 
     bool collided = false;
-    do{
+    while(!collided){
         choice = wgetch(gamewin->W);
         if(choice == ERR) choice = S->lastDir;
         switch(choice){
             case KEY_UP:
-                moveUp(gamewin,S);
+                collided = moveUp(gamewin,S);
                 break;
             case KEY_DOWN:
-                moveDown(gamewin,S);
+                collided = moveDown(gamewin,S);
                 break;
             case KEY_LEFT:
-                moveLeft(gamewin,S);
+                collided = moveLeft(gamewin,S);
                 break;
             case KEY_RIGHT:
-                moveRight(gamewin,S);
+                printw("moving right");
+                refresh();
+                collided = moveRight(gamewin,S);
                 break;
         }
         refresh();
         renderSnake(gamewin->W,S);;
-    } while(true);
+    }
 
+    cbreak();
     getch();
     endwin();
 }
