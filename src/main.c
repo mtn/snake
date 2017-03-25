@@ -1,17 +1,26 @@
 #include <ncurses.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "lib/snake.h"
 #include "lib/main.h"
 
-bool wmvaddch(Window* W, int y, int x, int ch){
-    int xMax, yMax;
+bool wmvaddch(Window* W, int y, int x, int ch){ int xMax, yMax;
     getmaxyx(W,yMax,xMax);
     if(yMax < y || xMax < x) return false;
 
     wmove(W,y,x);
     waddch(W,ch);
     return true;
+}
+
+int toOneD(int y, int x, int maxX){
+    return y*maxX + x;
+}
+
+bool isOccupied(GameWindow *GW, int y, int x, int xMax){
+    int ind = toOneD(y,x,xMax);
+    return GW->isOccupied[ind];
 }
 
 int main(){
@@ -79,39 +88,55 @@ int main(){
     int borderTB = (yMax-boundY)/2;
     int borderLR = (xMax-boundX)/2;
 
-    Window *gamewin = newwin(boundY,boundX,borderTB,borderLR);
-    keypad(gamewin,TRUE);
+    GameWindow *gamewin = malloc(sizeof(GameWindow));
+    gamewin->W = newwin(boundY,boundX,borderTB,borderLR);
+    gamewin->isOccupied = malloc(sizeof(bool)*boundX*boundY);
+    for(int i = 0; i < boundX*boundY; ++i){
+        if(i/boundX == 0 || i/boundX == boundY-1 || i % boundX == 0 || i % boundX == boundX-1)
+            gamewin->isOccupied[i] = true;
+        else gamewin->isOccupied[i] = false;
+    }
+
+    keypad(gamewin->W,TRUE);
     refresh();
-    box(gamewin,0,0);
+    box(gamewin->W,0,0);
 
     Snake* S = newSnake(boundX-1,boundY-1);
-    renderSnake(gamewin,S);
+    renderSnake(gamewin->W,S);
 
-    halfdelay(5);
+    // Difficulty level determines delay
+    switch(highlight){
+        case 0:
+            halfdelay(10);
+            break;
+        case 1:
+            halfdelay(5);
+            break;
+        case 2:
+            halfdelay(1);
+            break;
+    }
+
+    bool collided = false;
     do{
-        choice = wgetch(gamewin);
+        choice = wgetch(gamewin->W);
+        if(choice == ERR) choice = S->lastDir;
         switch(choice){
             case KEY_UP:
-                printw("u ");
                 moveUp(gamewin,S);
                 break;
             case KEY_DOWN:
-                printw("d ");
                 moveDown(gamewin,S);
                 break;
             case KEY_LEFT:
-                printw("l ");
                 moveLeft(gamewin,S);
                 break;
             case KEY_RIGHT:
-                printw("r ");
                 moveRight(gamewin,S);
-                break;
-            case ERR:
                 break;
         }
         refresh();
-        renderSnake(gamewin,S);;
+        renderSnake(gamewin->W,S);;
     } while(true);
 
     getch();

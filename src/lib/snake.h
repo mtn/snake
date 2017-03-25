@@ -19,10 +19,11 @@ typedef struct {
     int len; // Also corresponds to score
 } Snake;
 
-void moveUp(Window* W, Snake* S);
-void moveDown(Window* W, Snake* S);
-void moveLeft(Window* W, Snake* S);
-void moveRight(Window* W, Snake* S);
+// Movement functions return true if collision with wall (only)
+bool moveUp(GameWindow* GW, Snake* S);
+bool moveDown(GameWindow* GW, Snake* S);
+bool moveLeft(GameWindow* GW, Snake* S);
+bool moveRight(GameWindow* GW, Snake* S);
 Snake* newSnake(int xMax, int yMax);
 void delSnake(Snake* S);
 void renderSnake(Window* W, Snake* S);
