@@ -19,7 +19,7 @@ typedef struct {
 
 bool wmvaddch(Window* W, int y, int x, int ch);
 int toOneD(int y, int x, int maxX);
-bool isOccupied(GameWindow *GW, int y, int x, int xMax);
+bool isOccupied(GameWindow* GW, int y, int x, int xMax);
 
 #endif /* MAIN_H */
 

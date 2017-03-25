@@ -12,12 +12,13 @@ void renderSnake(Window* W, Snake* S){
 }
 
 bool moveUp(GameWindow* GW, Snake* S){
-    /* printw("Called moveUP"); */
     if(S->loc[S->len-1]->y > 1 &&
             !isOccupied(GW,S->loc[S->len-1]->y-1,S->loc[S->len-1]->x,S->b->xMax)){
         mvwprintw(GW->W,S->loc[S->lastInd]->y,S->loc[S->lastInd]->x," ");
+        GW->isOccupied[toOneD(S->loc[S->lastInd]->y,S->loc[S->lastInd]->x,S->b->xMax)] = false;
         S->loc[S->lastInd]->y = S->loc[S->lastInd]->y - 1;
         S->loc[S->lastInd]->x = S->loc[S->lastInd]->x;
+        GW->isOccupied[toOneD(S->loc[S->lastInd]->y,S->loc[S->lastInd]->x,S->b->xMax)] = true;
         S->lastInd = (S->lastInd + 1) % S->len;
         S->lastDir = KEY_UP;
         return false;
@@ -26,12 +27,13 @@ bool moveUp(GameWindow* GW, Snake* S){
 }
 
 bool moveDown(GameWindow* GW, Snake* S){
-    /* printw("Called moveDOWN"); */
     if(S->loc[S->len-1]->y < S->b->yMax-1 &&
             !isOccupied(GW,S->loc[S->len-1]->y+1,S->loc[S->len-1]->x,S->b->xMax)){
         mvwprintw(GW->W,S->loc[S->lastInd]->y,S->loc[S->lastInd]->x," ");
+        GW->isOccupied[toOneD(S->loc[S->lastInd]->y,S->loc[S->lastInd]->x,S->b->xMax)] = false;
         S->loc[S->lastInd]->y = S->loc[S->lastInd]->y + 1;
         S->loc[S->lastInd]->x = S->loc[S->lastInd]->x;
+        GW->isOccupied[toOneD(S->loc[S->lastInd]->y,S->loc[S->lastInd]->x,S->b->xMax)] = true;
         S->lastInd = (S->lastInd + 1) % S->len;
         S->lastDir = KEY_DOWN;
         return false;
@@ -40,12 +42,13 @@ bool moveDown(GameWindow* GW, Snake* S){
 }
 
 bool moveLeft(GameWindow* GW, Snake* S){
-    /* printw("Called moveLEFT"); */
     if(S->loc[S->len-1]->x > 1 &&
             !isOccupied(GW,S->loc[S->len-1]->y,S->loc[S->len-1]->x-1,S->b->xMax)){
         mvwprintw(GW->W,S->loc[S->lastInd]->y,S->loc[S->lastInd]->x," ");
+        GW->isOccupied[toOneD(S->loc[S->lastInd]->y,S->loc[S->lastInd]->x,S->b->xMax)] = false;
         S->loc[S->lastInd]->y = S->loc[S->lastInd]->y;
         S->loc[S->lastInd]->x = S->loc[S->lastInd]->x - 1;
+        GW->isOccupied[toOneD(S->loc[S->lastInd]->y,S->loc[S->lastInd]->x,S->b->xMax)] = true;
         S->lastInd = (S->lastInd + 1) % S->len;
         S->lastDir = KEY_LEFT;
         return false;
@@ -54,19 +57,30 @@ bool moveLeft(GameWindow* GW, Snake* S){
 }
 
 bool moveRight(GameWindow* GW, Snake* S){
-    /* printw("Called moveRIGHT"); */
     printw("%d",isOccupied(GW,S->loc[S->len-1]->y,S->loc[S->len-1]->x+1,S->b->xMax));
     refresh();
     if(S->loc[S->len-1]->x < S->b->xMax-1 &&
             !isOccupied(GW,S->loc[S->len-1]->y,S->loc[S->len-1]->x+1,S->b->xMax)){
         mvwprintw(GW->W,S->loc[S->lastInd]->y,S->loc[S->lastInd]->x," ");
+        GW->isOccupied[toOneD(S->loc[S->lastInd]->y,S->loc[S->lastInd]->x,S->b->xMax)] = false;
         S->loc[S->lastInd]->y = S->loc[S->lastInd]->y;
         S->loc[S->lastInd]->x = S->loc[S->lastInd]->x + 1;
+        GW->isOccupied[toOneD(S->loc[S->lastInd]->y,S->loc[S->lastInd]->x,S->b->xMax)] = true;
         S->lastInd = (S->lastInd + 1) % S->len;
         S->lastDir = KEY_RIGHT;
         return false;
     }
     return true;
+}
+
+void placeFood(GameWindow* GW, Snake* S){
+    int xLoc, yLoc;
+    do{
+        xLoc = rand() % S->b->xMax;
+        yLoc = rand() % S->b->yMax;
+    } while(GW->isOccupied[toOneD(yLoc,xLoc,S->b->xMax)]);
+
+    wmvaddch(GW->W,yLoc,xLoc,ACS_DIAMOND);
 }
 
 Snake* newSnake(int xMax, int yMax){

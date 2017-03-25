@@ -19,7 +19,7 @@ typedef struct {
     int len; // Also corresponds to score
 } Snake;
 
-// Movement functions return true if collision with wall (only)
+// Movement functions return true if collision occurs
 bool moveUp(GameWindow* GW, Snake* S);
 bool moveDown(GameWindow* GW, Snake* S);
 bool moveLeft(GameWindow* GW, Snake* S);
@@ -27,6 +27,7 @@ bool moveRight(GameWindow* GW, Snake* S);
 Snake* newSnake(int xMax, int yMax);
 void delSnake(Snake* S);
 void renderSnake(Window* W, Snake* S);
+void placeFood(GameWindow* GW, Snake* S);
 
 #endif /* SNAKE_H */
 

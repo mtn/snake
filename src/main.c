@@ -1,6 +1,7 @@
 #include <ncurses.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "lib/snake.h"
 #include "lib/main.h"
@@ -14,9 +15,7 @@ bool wmvaddch(Window* W, int y, int x, int ch){ int xMax, yMax;
     return true;
 }
 
-int toOneD(int y, int x, int maxX){
-    return y*maxX + x;
-}
+int toOneD(int y, int x, int maxX){ return y*maxX + x; }
 
 bool isOccupied(GameWindow *GW, int y, int x, int xMax){
     int ind = toOneD(y,x,xMax);
@@ -24,6 +23,8 @@ bool isOccupied(GameWindow *GW, int y, int x, int xMax){
 }
 
 int main(){
+
+    srand(time(NULL));
 
     initscr();
     noecho();
@@ -102,6 +103,7 @@ int main(){
 
     Snake* S = newSnake(boundX-1,boundY-1);
     renderSnake(gamewin->W,S);
+    placeFood(gamewin,S);
 
     // Difficulty level determines delay
     switch(highlight){
