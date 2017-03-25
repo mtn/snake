@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
 
 #include "lib/snake.h"
 #include "lib/main.h"
@@ -106,22 +107,35 @@ int main(){
     placeFood(gamewin,S);
 
     // Difficulty level determines delay
+    int msDelay;
     switch(highlight){
         case 0:
-            halfdelay(10);
+            msDelay = 800000;
+            halfdelay(8);
             break;
         case 1:
+            msDelay = 500000;
             halfdelay(5);
             break;
         case 2:
-            halfdelay(1);
+            msDelay = 200000;
+            halfdelay(2);
             break;
     }
 
     bool collided = false;
+    clock_t t;
+    double secsElapsed;
+    int msElapsed;
     while(!collided){
+        t = clock();
+        flushinp();
         choice = wgetch(gamewin->W);
+        t = clock() - t;
+        secsElapsed = ((double)t)/CLOCKS_PER_SEC; // seconds
+        msElapsed = (int)(secsElapsed*1000000); // microseconds
         if(choice == ERR) choice = S->lastDir;
+        else usleep(msDelay-msElapsed);
         switch(choice){
             case KEY_UP:
                 collided = moveUp(gamewin,S);
@@ -133,8 +147,6 @@ int main(){
                 collided = moveLeft(gamewin,S);
                 break;
             case KEY_RIGHT:
-                printw("moving right");
-                refresh();
                 collided = moveRight(gamewin,S);
                 break;
         }
