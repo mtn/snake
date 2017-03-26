@@ -107,16 +107,16 @@ int main(){
     int msDelay;
     switch(highlight){
         case 0:
-            msDelay = 800000;
-            halfdelay(8);
-            break;
-        case 1:
             msDelay = 500000;
             halfdelay(5);
             break;
+        case 1:
+            msDelay = 300000;
+            halfdelay(3);
+            break;
         case 2:
-            msDelay = 200000;
-            halfdelay(2);
+            msDelay = 100000;
+            halfdelay(1);
             break;
     }
 

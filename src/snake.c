@@ -23,7 +23,7 @@ bool reachingFood(Snake* S, int dir){
                 S->foodLoc->y == (S->loc[S->lastInd]->y+1);
             break;
         case KEY_LEFT:
-            printw("%d %d %d %d   ",S->foodLoc->x,S->loc[S->lastInd]->x-1,S->foodLoc->y,S->loc[S->lastInd]->y);
+            /* printw("%d %d %d %d   ",S->foodLoc->x,S->loc[S->lastInd]->x-1,S->foodLoc->y,S->loc[S->lastInd]->y); */
             return S->foodLoc->x == S->loc[S->lastInd]->x-1 &&
                 S->foodLoc->y == (S->loc[S->lastInd]->y);
             break;
@@ -36,13 +36,16 @@ bool reachingFood(Snake* S, int dir){
 }
 
 void growSnake(Snake* S, int newY, int newX){
-    for(int i = S->len; i > S->lastInd; i++){
+    for(int i = S->len; i > S->lastInd; i--){
+        printw("%d",i);
+        refresh();
         S->loc[i] = S->loc[i-1];
     }
     // Adding the head
     Coord *new = calloc(1,sizeof(Coord));
     new->x = newX, new->y = newY;
     S->loc[S->lastInd] = new;
+    S->lastInd++;
     S->len++;
 }
 
@@ -76,9 +79,10 @@ bool moveSnake(GameWindow* GW, Snake* S, int choice){
                 S->loc[S->lastInd]->x = newX;
             }
             else{
-                printw("GROWING ");
-                refresh();
                 growSnake(S,newY,newX);
+                placeFood(GW,S);
+                printw("S->len: %d S->loctail: (%d,%d) S->lastInd %d",S->len,S->loc[S->lastInd]->x,S->loc[S->lastInd]->y,S->lastInd);
+                refresh();
             }
             GW->isOccupied[toOneD(newY,newX,S->b->xMax)] = true;
             S->lastInd = (S->lastInd + 1) % S->len;
@@ -121,11 +125,6 @@ void placeFood(GameWindow* GW, Snake* S){
     GW->isOccupied[toOneD(foodLoc->y,foodLoc->x,S->b->xMax)] = true;
     S->foodLoc = foodLoc;
     wmvaddch(GW->W,foodLoc->y,foodLoc->x,ACS_DIAMOND);
-}
-
-void consumeFood(GameWindow* GW, Snake* S){
-
-
 }
 
 Snake* newSnake(int xMax, int yMax){
