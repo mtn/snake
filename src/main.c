@@ -136,20 +136,8 @@ int main(){
         msElapsed = (int)(secsElapsed*1000000); // microseconds
         if(choice == ERR) choice = S->lastDir;
         else usleep(msDelay-msElapsed);
-        switch(choice){
-            case KEY_UP:
-                collided = moveUp(gamewin,S);
-                break;
-            case KEY_DOWN:
-                collided = moveDown(gamewin,S);
-                break;
-            case KEY_LEFT:
-                collided = moveLeft(gamewin,S);
-                break;
-            case KEY_RIGHT:
-                collided = moveRight(gamewin,S);
-                break;
-        }
+
+        collided = moveSnake(gamewin,S,choice);
         refresh();
         renderSnake(gamewin->W,S);;
     }
