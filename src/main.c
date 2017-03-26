@@ -7,7 +7,8 @@
 #include "lib/snake.h"
 #include "lib/main.h"
 
-bool wmvaddch(Window* W, int y, int x, int ch){ int xMax, yMax;
+bool wmvaddch(Window* W, int y, int x, int ch){
+    int xMax, yMax;
     getmaxyx(W,yMax,xMax);
     if(yMax < y || xMax < x) return false;
 
@@ -90,19 +91,15 @@ int main(){
     int borderTB = (yMax-boundY)/2;
     int borderLR = (xMax-boundX)/2;
 
-    GameWindow *gamewin = malloc(sizeof(GameWindow));
+    GameWindow *gamewin = calloc(1,sizeof(GameWindow));
     gamewin->W = newwin(boundY,boundX,borderTB,borderLR);
-    gamewin->isOccupied = malloc(sizeof(bool)*boundX*boundY);
-    for(int i = 0; i < boundX*boundY; ++i){
-        if(i/boundX == 0 || i/boundX == boundY-1 || i % boundX == 0 || i % boundX == boundX-1)
-            gamewin->isOccupied[i] = true;
-        else gamewin->isOccupied[i] = false;
-    }
+    gamewin->isOccupied = calloc(boundX*boundY,sizeof(bool));
     keypad(gamewin->W,TRUE);
     refresh();
     box(gamewin->W,0,0);
 
     Snake* S = newSnake(boundX-1,boundY-1);
+    gamewin->isOccupied[toOneD(S->loc[0]->y,S->loc[0]->x,boundX-1)] = true;
     renderSnake(gamewin->W,S);
     placeFood(gamewin,S);
 

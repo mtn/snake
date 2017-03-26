@@ -12,6 +12,7 @@ void renderSnake(Window* W, Snake* S){
 }
 
 bool reachingFood(Snake* S, int dir){
+    /* printw("%d ",dir); */
     switch(dir){
         case KEY_UP:
             return S->foodLoc->x == S->loc[S->lastInd]->x &&
@@ -22,6 +23,7 @@ bool reachingFood(Snake* S, int dir){
                 S->foodLoc->y == (S->loc[S->lastInd]->y+1);
             break;
         case KEY_LEFT:
+            printw("%d %d %d %d   ",S->foodLoc->x,S->loc[S->lastInd]->x-1,S->foodLoc->y,S->loc[S->lastInd]->y);
             return S->foodLoc->x == S->loc[S->lastInd]->x-1 &&
                 S->foodLoc->y == (S->loc[S->lastInd]->y);
             break;
@@ -38,7 +40,7 @@ void growSnake(Snake* S, int newY, int newX){
         S->loc[i] = S->loc[i-1];
     }
     // Adding the head
-    Coord *new = malloc(sizeof(Coord));
+    Coord *new = calloc(1,sizeof(Coord));
     new->x = newX, new->y = newY;
     S->loc[S->lastInd] = new;
     S->len++;
@@ -69,10 +71,15 @@ bool moveSnake(GameWindow* GW, Snake* S, int choice){
             if(!eating){
                 mvwprintw(GW->W,S->loc[S->lastInd]->y,S->loc[S->lastInd]->x," ");
                 GW->isOccupied[toOneD(newY-yShift,newX-xShift,S->b->xMax)] = false;
+                refresh();
                 S->loc[S->lastInd]->y = newY;
                 S->loc[S->lastInd]->x = newX;
             }
-            else growSnake(S,newY,newX);
+            else{
+                printw("GROWING ");
+                refresh();
+                growSnake(S,newY,newX);
+            }
             GW->isOccupied[toOneD(newY,newX,S->b->xMax)] = true;
             S->lastInd = (S->lastInd + 1) % S->len;
 
@@ -91,16 +98,17 @@ bool moveSnake(GameWindow* GW, Snake* S, int choice){
                     S->lastDir = KEY_RIGHT;
                     break;
             }
+            /* printw("%d",S->len); */
+            refresh();
             return false;
     }
-    printw("couldnt advance");
-    printw("yMax: %d xMax: %d newY: %d newX: %d eating: %d isOccupied: %d",S->b->yMax,S->b->xMax,newY,newX,eating,!isOccupied(GW,newY,newX,S->b->xMax));
+    /* printw("yMax: %d xMax: %d newY: %d newX: %d eating: %d isOccupied: %d count: %d",S->b->yMax,S->b->xMax,newY,newX,eating,isOccupied(GW,newY,newX,S->b->xMax),count); */
     refresh();
     return true;
 }
 
 void placeFood(GameWindow* GW, Snake* S){
-    Coord *foodLoc = malloc(sizeof(Coord));
+    Coord *foodLoc = calloc(1,sizeof(Coord));
     if(!foodLoc){
         printf("Allocation of food coord failed!");
         exit(1);
@@ -108,10 +116,11 @@ void placeFood(GameWindow* GW, Snake* S){
     do{
         foodLoc->x = rand() % S->b->xMax;
         foodLoc->y = rand() % S->b->yMax;
-    } while(GW->isOccupied[toOneD(foodLoc->x,foodLoc->y,S->b->xMax)]);
+    } while(GW->isOccupied[toOneD(foodLoc->y,foodLoc->x,S->b->xMax)]);
 
-    wmvaddch(GW->W,foodLoc->y,foodLoc->y,ACS_DIAMOND);
+    GW->isOccupied[toOneD(foodLoc->y,foodLoc->x,S->b->xMax)] = true;
     S->foodLoc = foodLoc;
+    wmvaddch(GW->W,foodLoc->y,foodLoc->x,ACS_DIAMOND);
 }
 
 void consumeFood(GameWindow* GW, Snake* S){
@@ -121,13 +130,13 @@ void consumeFood(GameWindow* GW, Snake* S){
 
 Snake* newSnake(int xMax, int yMax){
 
-    Snake *S = malloc(sizeof(Snake));
+    Snake *S = calloc(1,sizeof(Snake));
     if(!S){
         printf("Allocation of snake failed!");
         exit(1);
     }
 
-    Boundaries *b = malloc(sizeof(Boundaries));
+    Boundaries *b = calloc(1,sizeof(Boundaries));
     if(!b){
         printf("Allocation of boundaries failed!");
         exit(1);
@@ -135,7 +144,7 @@ Snake* newSnake(int xMax, int yMax){
     b->xMax = xMax, b->yMax = yMax;
     S->b = b;
 
-    Coord** coordArr = malloc(sizeof(CoordPtr)*xMax*yMax);
+    Coord** coordArr = calloc(xMax*yMax,sizeof(CoordPtr));
     if(!coordArr){
         printf("Allocation of coordinate array failed!");
         exit(1);
@@ -143,7 +152,7 @@ Snake* newSnake(int xMax, int yMax){
     S->loc = coordArr;
 
     // Snake will start in the center, with length 1
-    Coord *first = malloc(sizeof(Coord));
+    Coord *first = calloc(1,sizeof(Coord));
     first->x = (xMax+1)/2;
     first->y = (yMax+1)/2;
     S->loc[0] = first;
