@@ -57,6 +57,10 @@ bool moveSnake(GameWindow* GW, Snake* S, int choice){
     bool eating = reachingFood(S,choice);
     int xShift, yShift, newX, newY;
     xShift = yShift = 0;
+    if(S->lastDir == KEY_UP && choice == KEY_DOWN) choice = KEY_UP;
+    if(S->lastDir == KEY_DOWN && choice == KEY_UP) choice = KEY_DOWN;
+    if(S->lastDir == KEY_LEFT && choice == KEY_RIGHT) choice = KEY_LEFT;
+    if(S->lastDir == KEY_RIGHT && choice == KEY_LEFT) choice = KEY_RIGHT;
     switch(choice){
         case KEY_UP:
             yShift = -1;
@@ -89,7 +93,7 @@ bool moveSnake(GameWindow* GW, Snake* S, int choice){
                 CoordLL* newHead = calloc(1,sizeof(CoordLL));
                 Coord* newCoord = calloc(1,sizeof(Coord));
                 if(!newHead || !newCoord){
-                    printf("Allocation failed!");
+                    printf("Allocation of head or head's coordinate failed!");
                     exit(1);
                 }
                 newHead->loc = newCoord;
