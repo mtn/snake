@@ -99,23 +99,23 @@ int main(){
     box(gamewin->W,0,0);
 
     Snake* S = newSnake(boundX-1,boundY-1);
-    gamewin->isOccupied[toOneD(S->loc[0]->y,S->loc[0]->x,boundX-1)] = true;
+    gamewin->isOccupied[toOneD(S->first->loc->y,S->first->loc->x,boundX-1)] = true;
     renderSnake(gamewin->W,S);
     placeFood(gamewin,S);
 
     // Difficulty level determines delay
-    int msDelay;
+    int usDelay;
     switch(highlight){
         case 0:
-            msDelay = 500000;
+            usDelay = 500000;
             halfdelay(5);
             break;
         case 1:
-            msDelay = 300000;
+            usDelay = 300000;
             halfdelay(3);
             break;
         case 2:
-            msDelay = 100000;
+            usDelay = 100000;
             halfdelay(1);
             break;
     }
@@ -123,16 +123,16 @@ int main(){
     bool collided = false;
     clock_t t;
     double secsElapsed;
-    int msElapsed;
+    int usElapsed;
     while(!collided){
         t = clock();
         flushinp();
         choice = wgetch(gamewin->W);
         t = clock() - t;
         secsElapsed = ((double)t)/CLOCKS_PER_SEC; // seconds
-        msElapsed = (int)(secsElapsed*1000000); // microseconds
+        usElapsed = (int)(secsElapsed*1000000); // microseconds
         if(choice == ERR) choice = S->lastDir;
-        else usleep(msDelay-msElapsed);
+        else usleep(usDelay-usElapsed);
 
         collided = moveSnake(gamewin,S,choice);
         refresh();

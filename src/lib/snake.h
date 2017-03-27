@@ -6,18 +6,15 @@
 #include "main.h"
 
 
-typedef struct {
-    int xMax; // max legal positions
-    int yMax;
-} Boundaries;
+typedef Coord Boundaries; // Boundaries can be summarized by the right-most, bottom-most coordinate
 
 typedef struct {
-    Coord** loc;
-    Boundaries* b; // These aren't really snake properties, but convenient and unchanging
+    CoordLL* first; // Head
+    CoordLL* last; // End of tail
+    Boundaries* bounds; // Not really a snake properties, but convenient and unchanging
     Coord* foodLoc;
     int lastDir;
-    int lastInd; // Index of last, because the coord array won't be kept in order for efficiency
-    int len; // Also corresponds to score
+    int len;
 } Snake;
 
 // Movement functions return true if collision occurs
