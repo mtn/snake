@@ -40,12 +40,12 @@ bool reachingFood(Snake* S, int dir){
 void placeFood(GameWindow* GW, Snake* S){
     Coord *foodLoc = calloc(1,sizeof(Coord));
     if(!foodLoc){
-        printf("Allocation of food coord failed!");
+        printf("Allocation of food coordinate failed!");
         exit(1);
     }
     do{
-        foodLoc->x = rand() % S->bounds->x;
-        foodLoc->y = rand() % S->bounds->y;
+        foodLoc->x = (rand() % (S->bounds->x-1)) + 1;
+        foodLoc->y = (rand() % (S->bounds->y-1)) + 1;
     } while(GW->isOccupied[toOneD(foodLoc->y,foodLoc->x,S->bounds->x)]);
 
     GW->isOccupied[toOneD(foodLoc->y,foodLoc->x,S->bounds->x)] = true;
@@ -99,6 +99,7 @@ bool moveSnake(GameWindow* GW, Snake* S, int choice){
                 S->first->prev = newHead;
                 S->first = S->first->prev;
                 S->first->prev = NULL;
+                S->len++;
                 placeFood(GW,S);
             }
             GW->isOccupied[toOneD(newY,newX,S->bounds->x)] = true;
@@ -120,7 +121,6 @@ bool moveSnake(GameWindow* GW, Snake* S, int choice){
             }
             return false;
     }
-    /* printw("yMax: %d xMax: %d newY: %d newX: %d eating: %d isOccupied: %d count: %d",S->bounds->yMax,S->bounds->xMax,newY,newX,eating,isOccupied(GW,newY,newX,S->bounds->xMax),count); */
     return true;
 }
 

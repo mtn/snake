@@ -24,6 +24,58 @@ bool isOccupied(GameWindow *GW, int y, int x, int xMax){
     return GW->isOccupied[ind];
 }
 
+void freeGW(GameWindow* GW){
+    free(GW->isOccupied);
+    delwin(GW->W);
+    free(GW);
+}
+
+void updateScore(Window* scoreWin, Snake* S){
+        wclear(scoreWin);
+        box(scoreWin,0,0);
+        wmove(scoreWin,2,1);
+        wprintw(scoreWin,"Score: %d",S->len);
+        wrefresh(scoreWin);
+}
+
+// This function is not very general, but could easily be changed as needed
+int renderMenu(Window* W, int menuWidth, char* title, char* subtitle, int numOptions, char** options){
+    wattron(W,A_REVERSE);
+    mvwprintw(W,1,(menuWidth-strlen(title))/2,title);
+    wattroff(W,A_REVERSE);
+    mvwprintw(W,3,2,subtitle);
+
+    int highlight = 0;
+    while(true){
+        for(int i = 0; i < numOptions; ++i){
+            if(i==highlight){
+                wattron(W,A_BOLD);
+                mvwprintw(W,5+i,5,"*");
+            }
+            else
+                mvwprintw(W,5+i,5," ");
+            mvwprintw(W,5+i,6,options[i]);
+            wattroff(W,A_BOLD);
+        }
+        int choice = wgetch(W);
+
+        switch(choice){
+            case KEY_DOWN:
+                if(highlight < 2) highlight++;
+                break;
+            case KEY_UP:
+                if(highlight > 0) highlight--;
+            default:
+                break;
+        }
+        refresh();
+        // wgetch 10  -> enter -> no more rendering
+        wrefresh(W);
+        if(choice==10) break;
+    }
+    return highlight;
+}
+
 int main(){
 
     srand(time(NULL));
@@ -48,42 +100,8 @@ int main(){
     refresh();
     box(menuwin,0,0);
 
-    wattron(menuwin,A_REVERSE);
-    char* title = "Snake";
-    mvwprintw(menuwin,1,(menuWidth-strlen(title))/2,title);
-    wattroff(menuwin,A_REVERSE);
-
     char* difficulties[3] = { "Easy", "Medium", "Hard" };
-    int choice, highlight=0;
-    mvwprintw(menuwin,3,2,"Select difficulty:");
-
-    while(true){
-        for(int i = 0; i < 3; ++i){
-            if(i==highlight){
-                wattron(menuwin,A_BOLD);
-                mvwprintw(menuwin,5+i,5,"*");
-            }
-            else
-                mvwprintw(menuwin,5+i,5," ");
-            mvwprintw(menuwin,5+i,6,difficulties[i]);
-            wattroff(menuwin,A_BOLD);
-        }
-        choice = wgetch(menuwin);
-
-        switch(choice){
-            case KEY_DOWN:
-                if(highlight < 2) highlight++;
-                break;
-            case KEY_UP:
-                if(highlight > 0) highlight--;
-            default:
-                break;
-        }
-        refresh();
-        // wgetch 10  -> enter -> no more rendering
-        wrefresh(menuwin);
-        if(choice==10) break;
-    }
+    int choice, highlight = renderMenu(menuwin,menuWidth,"Snake","Select difficulty:",3,difficulties);
     delwin(menuwin);
 
     int boundY = yMax/relSize;
@@ -124,6 +142,10 @@ int main(){
     clock_t t;
     double secsElapsed;
     int usElapsed;
+    Window *scoreWin = newwin(4,12,yMax-3,xMax-12);
+    refresh();
+    updateScore(scoreWin,S);
+
     while(!collided){
         t = clock();
         flushinp();
@@ -135,12 +157,25 @@ int main(){
         else usleep(usDelay-usElapsed);
 
         collided = moveSnake(gamewin,S,choice);
-        refresh();
         renderSnake(gamewin->W,S);;
+        updateScore(scoreWin,S);
     }
 
     cbreak();
-    getch();
+    freeGW(gamewin);
+    clear();
+    refresh();
+    updateScore(scoreWin,S);
+    Window *endGameWin = newwin(menuHeight,menuWidth,(yMax-menuHeight)/2,(xMax-menuWidth)/2);
+    keypad(endGameWin,TRUE);
+    refresh();
+
+    box(endGameWin,0,0);
+    char* endGameOptions[4] = { "Yes", "No" };
+    choice = renderMenu(endGameWin,menuWidth,"End of game :(","Play Again?",2,endGameOptions);
+    if(choice == 0) main();
+    delwin(endGameWin);
+    delwin(scoreWin);
     endwin();
 }
 
