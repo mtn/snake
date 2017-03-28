@@ -160,8 +160,20 @@ int main(){
         renderSnake(gamewin->W,S);;
         updateScore(scoreWin,S);
     }
+    int count = 0;
+    for(int i = 0; i < boundX; ++i){
+        for(int j = 0; j < boundY; ++j){
+            if(gamewin->isOccupied[toOneD(j,i,S->bounds->x)]){
+                wmove(gamewin->W,j,i);
+                wprintw(gamewin->W,"x");
+            }
+        }
+    }
+    refresh();
+    wrefresh(gamewin->W);
 
     cbreak();
+    getch();
     freeGW(gamewin);
     clear();
     refresh();

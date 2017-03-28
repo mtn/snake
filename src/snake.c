@@ -5,7 +5,6 @@
 #include "lib/snake.h"
 
 void renderSnake(Window* W, Snake* S){
-    // Pretty naive? TODO check how rendering updates work
     CoordLL* first = S->first;
     while(S->first){
         wmvaddch(W,S->first->loc->y,S->first->loc->x,ACS_DIAMOND);
@@ -81,7 +80,7 @@ bool moveSnake(GameWindow* GW, Snake* S, int choice){
             && (eating || !isOccupied(GW,newY,newX,S->bounds->x))){
             if(!eating){
                 mvwprintw(GW->W,S->last->loc->y,S->last->loc->x," ");
-                GW->isOccupied[toOneD(newY-yShift,newX-xShift,S->bounds->x)] = false;
+                GW->isOccupied[toOneD(S->last->loc->y,S->last->loc->x,S->bounds->x)] = false;
                 S->first->prev = S->last; // Reusing tail memory as head
                 S->last = S->last->prev;
                 S->first = S->first->prev;
