@@ -30,11 +30,11 @@ void freeGW(GameWindow* GW){
     free(GW);
 }
 
-void updateScore(Window* scoreWin, Snake* S){
+void updateScore(Window* scoreWin, Snake* S, int difficulty){
         wclear(scoreWin);
         box(scoreWin,0,0);
         wmove(scoreWin,2,1);
-        wprintw(scoreWin,"Score: %d",S->len);
+        wprintw(scoreWin,"Score: %d",S->len*difficulty);
         wrefresh(scoreWin);
 }
 
@@ -142,9 +142,9 @@ int main(){
     clock_t t;
     double secsElapsed;
     int usElapsed;
-    Window *scoreWin = newwin(4,12,yMax-3,xMax-12);
+    Window *scoreWin = newwin(4,14,yMax-3,xMax-14);
     refresh();
-    updateScore(scoreWin,S);
+    updateScore(scoreWin,S,highlight+1);
 
     while(!collided){
         t = clock();
@@ -158,26 +158,14 @@ int main(){
 
         collided = moveSnake(gamewin,S,choice);
         renderSnake(gamewin->W,S);;
-        updateScore(scoreWin,S);
+        updateScore(scoreWin,S,highlight+1);
     }
-    int count = 0;
-    for(int i = 0; i < boundX; ++i){
-        for(int j = 0; j < boundY; ++j){
-            if(gamewin->isOccupied[toOneD(j,i,S->bounds->x)]){
-                wmove(gamewin->W,j,i);
-                wprintw(gamewin->W,"x");
-            }
-        }
-    }
-    refresh();
-    wrefresh(gamewin->W);
 
     cbreak();
-    getch();
     freeGW(gamewin);
     clear();
     refresh();
-    updateScore(scoreWin,S);
+    updateScore(scoreWin,S,highlight+1);
     Window *endGameWin = newwin(menuHeight,menuWidth,(yMax-menuHeight)/2,(xMax-menuWidth)/2);
     keypad(endGameWin,TRUE);
     refresh();
