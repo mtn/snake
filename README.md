@@ -6,3 +6,11 @@ There were a few minor things I didn't love and would consider changing:
 * I manipulated `halfdelay()` (combined with a timer) to get the behavior I wanted, but hard is still pretty easy. `halfdelay()` only takes integer inputs, so I'd have to come up with a different solution to address this.
 * Rows are taller than columns, so vertical movement is way faster. This wouldn't be a huge deal to fix with a different timing system.
 * Diamonds might not be the best character for snake body? :gem:
+
+## Usage
+
+Clone repository and `cd` into the directory:
+
+    git clone git@github.com:mtn/snake.git && cd snake
+
+Build the executable by running `make` and run with `./snake` :snake:
