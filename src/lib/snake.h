@@ -21,7 +21,7 @@ typedef struct {
 bool moveSnake(GameWindow* GW, Snake* S, int choice);
 Snake* newSnake(int xMax, int yMax);
 void delSnake(Snake* S);
-void renderSnake(Window* W, Snake* S);
+void renderSnake(Window* W, Snake const * const S);
 void placeFood(GameWindow* GW, Snake* S);
 void growSnake(Snake* S, int newY, int newX);
 

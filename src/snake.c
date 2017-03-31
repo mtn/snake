@@ -4,13 +4,12 @@
 
 #include "lib/snake.h"
 
-void renderSnake(Window* W, Snake* S){
-    CoordLL* first = S->first;
-    while(S->first){
-        wmvaddch(W,S->first->loc->y,S->first->loc->x,ACS_DIAMOND);
-        S->first = S->first->next;
+void renderSnake(Window* W, Snake const * const S){
+    CoordLL* body = S->first;
+    while(body){
+        wmvaddch(W,body->loc->y,body->loc->x,ACS_DIAMOND);
+        body = body->next;
     }
-    S->first = first;
     wrefresh(W);
 }
 
@@ -48,9 +47,9 @@ void placeFood(GameWindow* GW, Snake* S){
     } while(GW->isOccupied[toOneD(foodLoc->y,foodLoc->x,S->bounds->x)]);
 
     GW->isOccupied[toOneD(foodLoc->y,foodLoc->x,S->bounds->x)] = true;
+    free(S->foodLoc);
     S->foodLoc = foodLoc;
-    wmvaddch(GW->W,foodLoc->y,foodLoc->x,ACS_DIAMOND);
-}
+    wmvaddch(GW->W,foodLoc->y,foodLoc->x,ACS_DIAMOND); }
 
 bool moveSnake(GameWindow* GW, Snake* S, int choice){
     bool eating = reachingFood(S,choice);
