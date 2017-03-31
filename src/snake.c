@@ -105,22 +105,7 @@ bool moveSnake(GameWindow* GW, Snake* S, int choice){
                 placeFood(GW,S);
             }
             GW->isOccupied[toOneD(newY,newX,S->bounds->x)] = true;
-
-            // Unfortunately clunky for now
-            switch(choice){
-                case KEY_UP:
-                    S->lastDir = KEY_UP;
-                    break;
-                case KEY_DOWN:
-                    S->lastDir = KEY_DOWN;
-                    break;
-                case KEY_LEFT:
-                    S->lastDir = KEY_LEFT;
-                    break;
-                case KEY_RIGHT:
-                    S->lastDir = KEY_RIGHT;
-                    break;
-            }
+            S->lastDir = choice;
             return false;
     }
     return true;
