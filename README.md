@@ -14,3 +14,6 @@ Clone repository and `cd` into the directory:
     git clone git@github.com:mtn/snake.git && cd snake
 
 Build the executable by running `make` and run with `./snake` :snake:
+
+## Demo
+
