@@ -1,6 +1,9 @@
-#define EXPERT_DELAY 100000
-#define INTERMEDIATE_DELAY 300000
 #define BEGINNER_DELAY 500000
+#define BEGINNER_HALF_DELAY 5
+#define INTERMEDIATE_DELAY 300000
+#define INTERMEDIATE_HALF_DELAY 3
+#define EXPERT_DELAY 100000
+#define EXPERT_HALF_DELAY 1
 
 #include <ncurses.h>
 #include <string.h>
@@ -81,6 +84,7 @@ int renderMenu(Window* W, int menuWidth, char* title, char* subtitle, int numOpt
 
 int main(){
 
+    /* TODO: break up this monstrosity*/
     srand(time(NULL));
 
     initscr();
@@ -97,7 +101,7 @@ int main(){
         endwin();
         return -1;
     }
-Window *menuwin = newwin(menuHeight,menuWidth,(yMax-menuHeight)/2,(xMax-menuWidth)/2);
+    Window *menuwin = newwin(menuHeight,menuWidth,(yMax-menuHeight)/2,(xMax-menuWidth)/2);
     keypad(menuwin,TRUE);
     refresh();
     box(menuwin,0,0);
@@ -129,15 +133,15 @@ Window *menuwin = newwin(menuHeight,menuWidth,(yMax-menuHeight)/2,(xMax-menuWidt
     switch(highlight){
         case BEGINNER:
             usDelay = BEGINNER_DELAY;
-            halfdelay(5);
+            halfdelay(BEGINNER_HALF_DELAY);
             break;
         case INTERMEDIATE:
             usDelay = INTERMEDIATE_DELAY;
-            halfdelay(3);
+            halfdelay(INTERMEDIATE_HALF_DELAY);
             break;
         case EXPERT:
             usDelay = EXPERT_DELAY;
-            halfdelay(1);
+            halfdelay(EXPERT_HALF_DELAY);
             break;
     }
 
