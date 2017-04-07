@@ -17,3 +17,5 @@ Build the executable by running `make` and run with `./snake` :snake:
 
 ## Demo
 
+![demo](https://github.com/mtn/snake/blob/master/snake_demo.gif)
+
