@@ -24,6 +24,8 @@ typedef struct CoordLL {
     struct CoordLL* prev;
 } CoordLL, *CoordLLPtr;
 
+typedef enum {BEGINNER, INTERMEDIATE, EXPERT} PlayerLevel;
+
 bool wmvaddch(Window* W, int y, int x, int ch);
 int toOneD(int y, int x, int maxX);
 bool isOccupied(GameWindow* GW, int y, int x, int xMax);

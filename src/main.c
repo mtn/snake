@@ -1,9 +1,12 @@
+#define EXPERT_DELAY 100000
+#define INTERMEDIATE_DELAY 300000
+#define BEGINNER_DELAY 500000
+
 #include <ncurses.h>
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
-
 #include "lib/snake.h"
 #include "lib/main.h"
 
@@ -94,18 +97,18 @@ int main(){
         endwin();
         return -1;
     }
-
-    Window *menuwin = newwin(menuHeight,menuWidth,(yMax-menuHeight)/2,(xMax-menuWidth)/2);
+Window *menuwin = newwin(menuHeight,menuWidth,(yMax-menuHeight)/2,(xMax-menuWidth)/2);
     keypad(menuwin,TRUE);
     refresh();
     box(menuwin,0,0);
 
     char* difficulties[3] = { "Easy", "Medium", "Hard" };
-    int choice, highlight = renderMenu(menuwin,menuWidth,"Snake","Select difficulty:",3,difficulties);
+    int choice;
+    PlayerLevel highlight = renderMenu(menuwin,menuWidth,"Snake","Select difficulty:",3,difficulties);
     delwin(menuwin);
 
-    int boundY = yMax/relSize;
-    int boundX = xMax/relSize;
+    int boundY = (int)(yMax/relSize);
+    int boundX = (int)(xMax/relSize);
     int borderTB = (yMax-boundY)/2;
     int borderLR = (xMax-boundX)/2;
 
@@ -124,16 +127,16 @@ int main(){
     // Difficulty level determines delay
     int usDelay;
     switch(highlight){
-        case 0:
-            usDelay = 500000;
+        case BEGINNER:
+            usDelay = BEGINNER_DELAY;
             halfdelay(5);
             break;
-        case 1:
-            usDelay = 300000;
+        case INTERMEDIATE:
+            usDelay = INTERMEDIATE_DELAY;
             halfdelay(3);
             break;
-        case 2:
-            usDelay = 100000;
+        case EXPERT:
+            usDelay = EXPERT_DELAY;
             halfdelay(1);
             break;
     }
